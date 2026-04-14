@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gava's Restaurant - The Experience</title>
+    <!-- Tailwind CSS 4 CDN -->
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <style type="text/css">
+        @theme {
+            --font-serif: "Cormorant Garamond", serif;
+            --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+            --color-gold: #D4AF37;
+            --color-warm-black: #0A0502;
+            --color-fire: #FF4E00;
+        }
+
+        body {
+            background-color: #0A0502;
+            color: white;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: "Inter", sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .text-glow {
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .bg-cinematic {
+            background: 
+                radial-gradient(circle at 50% 30%, #3a1510 0%, transparent 60%),
+                radial-gradient(circle at 10% 80%, #FF4E00 0%, transparent 50%),
+                radial-gradient(circle at 90% 90%, #D4AF37 0%, transparent 40%);
+        }
+
+        .animate-flicker {
+            animation: flicker 4s infinite;
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 0.8; }
+            70% { opacity: 0.65; }
+            80% { opacity: 0.75; }
+        }
+
+        .ember {
+            position: absolute;
+            background: #FF4E00;
+            border-radius: 50%;
+            filter: blur(1px);
+            pointer-events: none;
+            animation: rise 6s infinite linear;
+        }
+
+        @keyframes rise {
+            0% { transform: translateY(100vh) translateX(0) scale(1); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateY(-10vh) translateX(20px) scale(0.5); opacity: 0; }
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <!-- React and Dependencies via ESM -->
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@19",
+        "react-dom": "https://esm.sh/react-dom@19",
+        "react-dom/client": "https://esm.sh/react-dom@19/client",
+        "motion/react": "https://esm.sh/motion@12/react",
+        "lucide-react": "https://esm.sh/lucide-react@0.475.0"
+      }
+    }
+    </script>
+
+    <script type="module">
+        import React, { useState, useCallback, useEffect, useMemo } from 'react';
+        import { createRoot } from 'react-dom/client';
+        import { motion, AnimatePresence } from 'motion/react';
+        import { Bell, Receipt, ShoppingBag, Music, Flame, Star, X } from 'lucide-react';
+
+        const WHATSAPP_NUMBER = '+263779388560';
+
+        const MENU_ITEMS = [
+            { id: '1', name: 'Oxtail + Sadza', price: '$18.00', image: 'https://picsum.photos/seed/oxtail/400/300', category: 'Traditional Meals', isPopular: true, description: 'Slow-cooked tender oxtail in a rich gravy.' },
+            { id: '2', name: 'Quarter Chicken', price: '$12.00', image: 'https://picsum.photos/seed/chicken/400/300', category: 'Grill / Braai', isPopular: true, isLimited: true, description: 'Flame-grilled peri-peri chicken.' },
+            { id: '3', name: 'Braai Platter', price: '$25.00', image: 'https://picsum.photos/seed/braai/400/300', category: 'Grill / Braai', isPopular: true, description: 'A feast of boerewors, steak, and chops.' },
+            { id: '4', name: 'Beef Stew', price: '$14.00', image: 'https://picsum.photos/seed/stew/400/300', category: 'Traditional Meals', description: 'Hearty beef chunks with seasonal veg.' },
+            { id: '5', name: 'Mazondo (Trotters)', price: '$15.00', image: 'https://picsum.photos/seed/trotters/400/300', category: 'Traditional Meals', isLimited: true, description: 'Traditional beef trotters slow-cooked.' },
+            { id: '6', name: 'Zambezi Lager', price: '$4.00', image: 'https://picsum.photos/seed/beer/400/300', category: 'Drinks', description: 'Zimbabwe\'s finest lager.' }
+        ];
+
+        function MainScreen() {
+            const [selectedItem, setSelectedItem] = useState(null);
+            const [tableNumber, setTableNumber] = useState('');
+
+            const currentPromo = useMemo(() => {
+                const hour = new Date().getHours();
+                if (hour >= 6 && hour < 11) return { title: "Breakfast Plate + Tea", desc: "The perfect start.", image: "https://picsum.photos/seed/breakfast/800/450", price: "$8.00", time: "Morning Special" };
+                if (hour >= 11 && hour < 16) return { title: "Grilled Chicken + Sadza", desc: "Hearty fuel.", image: "https://picsum.photos/seed/lunch/800/450", price: "$12.00", time: "Lunch Special" };
+                return { title: "Steak + Drink + Music", desc: "The ultimate evening.", image: "https://picsum.photos/seed/dinner/800/450", price: "$22.00", time: "Dinner Special" };
+            }, []);
+
+            const handleWhatsAppOrder = (item, table) => {
+                const message = `Hello Gava’s,\n\nI’d like to order:\n\nItem: ${item.name || item.title}\nPrice: ${item.price}\n\nTable Number: ${table || 'Not specified'}\n\nThank you.`;
+                window.open(`https://wa.me/${WHATSAPP_NUMBER.replace('+', '')}?text=${encodeURIComponent(message)}`, '_blank');
+                setSelectedItem(null);
+            };
+
+            const handleAction = (type) => {
+                const message = type === 'waiter' ? `Hi, I need assistance at table ${tableNumber || '[X]'}` : `Hi, please bring the bill to table ${tableNumber || '[X]'}`;
+                window.open(`https://wa.me/${WHATSAPP_NUMBER.replace('+', '')}?text=${encodeURIComponent(message)}`, '_blank');
+            };
+
+            return React.createElement('div', { className: "flex flex-col h-screen w-full bg-warm-black text-white overflow-hidden" }, [
+                // Header
+                React.createElement('header', { key: "h", className: "flex items-center justify-between px-6 py-4 bg-warm-black/80 backdrop-blur-md sticky top-0 z-50 border-b border-white/5" }, [
+                    React.createElement('h1', { className: "font-serif text-2xl font-bold tracking-tighter text-glow" }, "GAVA’S"),
+                    React.createElement('div', { className: "flex items-center gap-4" }, [
+                        React.createElement('button', { onClick: () => window.location.reload(), className: "text-[10px] uppercase tracking-widest text-white/20" }, "Reset"),
+                        React.createElement('button', { className: "p-2 rounded-full bg-white/5" }, React.createElement(Star, { size: 20, className: "text-gold" }))
+                    ])
+                ]),
+
+                // Content
+                React.createElement('main', { key: "m", className: "flex-1 overflow-y-auto pb-32 scroll-smooth" }, [
+                    // Promo
+                    React.createElement('section', { key: "p", className: "px-6 py-6" }, [
+                        React.createElement('div', { className: "flex items-center justify-between mb-4" }, [
+                            React.createElement('h2', { className: "text-[10px] uppercase tracking-[0.2em] font-bold text-white/40" }, currentPromo.time),
+                            React.createElement('span', { className: "text-[10px] font-bold text-fire animate-pulse" }, "LIVE NOW")
+                        ]),
+                        React.createElement(motion.div, { 
+                            whileHover: { scale: 1.02 }, 
+                            onClick: () => setSelectedItem({ ...currentPromo, name: currentPromo.title, category: 'Special' }),
+                            className: "relative aspect-[16/9] rounded-2xl overflow-hidden cursor-pointer" 
+                        }, [
+                            React.createElement('img', { src: currentPromo.image, className: "absolute inset-0 w-full h-full object-cover" }),
+                            React.createElement('div', { className: "absolute inset-0 bg-gradient-to-t from-warm-black via-warm-black/20 to-transparent" }),
+                            React.createElement('div', { className: "absolute bottom-0 left-0 p-6 w-full flex justify-between items-end" }, [
+                                React.createElement('div', null, [
+                                    React.createElement('div', { className: "flex items-center gap-2 mb-2" }, [
+                                        React.createElement(Flame, { size: 16, className: "text-fire" }),
+                                        React.createElement('span', { className: "text-xs font-bold uppercase tracking-wider text-fire" }, "Order This Now")
+                                    ]),
+                                    React.createElement('h3', { className: "text-2xl font-serif font-bold mb-1" }, currentPromo.title)
+                                ]),
+                                React.createElement('p', { className: "text-gold font-bold text-xl" }, currentPromo.price)
+                            ])
+                        ])
+                    ]),
+
+                    // Recommended
+                    React.createElement('section', { key: "r", className: "py-6 bg-white/[0.02]" }, [
+                        React.createElement('div', { className: "px-6 flex items-center justify-between mb-4" }, [
+                            React.createElement('h2', { className: "text-[10px] uppercase tracking-[0.2em] font-bold text-white/40" }, "Recommended"),
+                            React.createElement('span', { className: "text-[10px] font-bold text-gold" }, "Popular Now")
+                        ]),
+                        React.createElement('div', { className: "flex gap-4 overflow-x-auto px-6 no-scrollbar" }, 
+                            MENU_ITEMS.filter(i => i.isPopular).map(i => React.createElement('div', { key: i.id, onClick: () => setSelectedItem(i), className: "flex-shrink-0 w-40 bg-white/5 rounded-2xl overflow-hidden relative" }, [
+                                i.isLimited && React.createElement('div', { className: "absolute top-2 right-2 bg-fire text-[8px] font-bold px-2 py-1 rounded-full" }, "ONLY TODAY"),
+                                React.createElement('img', { src: i.image, className: "w-full h-28 object-cover" }),
+                                React.createElement('div', { className: "p-3" }, [
+                                    React.createElement('h3', { className: "font-bold text-xs mb-1" }, i.name),
+                                    React.createElement('p', { className: "text-gold font-bold text-xs" }, i.price)
+                                ])
+                            ]))
+                        )
+                    ]),
+
+                    // Menu
+                    React.createElement('section', { key: "fm", className: "px-6 py-6" }, [
+                        React.createElement('h2', { className: "text-[10px] uppercase tracking-[0.2em] font-bold text-white/40 mb-6" }, "Full Menu"),
+                        ['Traditional Meals', 'Grill / Braai', 'Drinks'].map(cat => React.createElement('div', { key: cat, className: "mb-8" }, [
+                            React.createElement('h3', { className: "font-serif text-xl font-bold mb-4 text-gold/80 border-l-2 border-gold pl-3" }, cat),
+                            React.createElement('div', { className: "flex flex-col gap-4" }, 
+                                MENU_ITEMS.filter(i => i.category === cat).map(i => React.createElement('div', { key: i.id, onClick: () => setSelectedItem(i), className: "flex gap-4 p-3 rounded-2xl bg-white/5 relative" }, [
+                                    i.isLimited && React.createElement('div', { className: "absolute top-3 right-3 bg-fire/20 text-[8px] font-bold px-2 py-0.5 rounded-full text-fire" }, "LIMITED"),
+                                    React.createElement('img', { src: i.image, className: "w-20 h-20 rounded-xl object-cover" }),
+                                    React.createElement('div', { className: "flex flex-col justify-center" }, [
+                                        React.createElement('h4', { className: "font-bold text-sm mb-1" }, i.name),
+                                        React.createElement('p', { className: "text-gold font-bold text-sm" }, i.price)
+                                    ])
+                                ]))
+                            )
+                        ]))
+                    ]),
+
+                    // Identity
+                    React.createElement('section', { key: "id", className: "px-12 py-12 text-center" }, [
+                        React.createElement('div', { className: "w-8 h-[1px] bg-gold/30 mx-auto mb-6" }),
+                        React.createElement('p', { className: "font-serif italic text-sm text-white/30 leading-relaxed" }, 
+                            "\"Gava’s is where Zimbabwean food, music, and culture meet. From sadza to live bands, every visit feels like home.\""
+                        ),
+                        React.createElement('div', { className: "w-8 h-[1px] bg-gold/30 mx-auto mt-6" })
+                    ])
+                ]),
+
+                // Action Bar
+                React.createElement('nav', { key: "nav", className: "fixed bottom-0 left-0 right-0 p-4 bg-warm-black/90 backdrop-blur-xl border-t border-white/5 z-50" }, [
+                    React.createElement('div', { className: "max-w-md mx-auto flex items-center justify-between gap-4" }, [
+                        React.createElement('button', { onClick: () => handleAction('waiter'), className: "flex-1 flex flex-col items-center gap-1" }, [
+                            React.createElement(Bell, { size: 18, className: "text-white/60" }),
+                            React.createElement('span', { className: "text-[8px] uppercase font-bold text-white/40" }, "Call Waiter")
+                        ]),
+                        React.createElement('button', { onClick: () => document.querySelector('main').scrollTo({top:0, behavior:'smooth'}), className: "flex-[1.5] flex items-center justify-center gap-2 py-3 rounded-full bg-gold text-warm-black font-bold text-xs shadow-[0_0_20px_rgba(212,175,55,0.3)]" }, [
+                            React.createElement(ShoppingBag, { size: 16 }),
+                            React.createElement('span', null, "Order Now")
+                        ]),
+                        React.createElement('button', { onClick: () => handleAction('bill'), className: "flex-1 flex flex-col items-center gap-1" }, [
+                            React.createElement(Receipt, { size: 18, className: "text-white/60" }),
+                            React.createElement('span', { className: "text-[8px] uppercase font-bold text-white/40" }, "Request Bill")
+                        ])
+                    ])
+                ]),
+
+                // Modal
+                React.createElement(AnimatePresence, { key: "modal" }, selectedItem && React.createElement('div', { className: "fixed inset-0 z-[100] flex items-end justify-center px-4 pb-8" }, [
+                    React.createElement(motion.div, { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 }, onClick: () => setSelectedItem(null), className: "absolute inset-0 bg-warm-black/80 backdrop-blur-sm" }),
+                    React.createElement(motion.div, { initial: { y: "100%" }, animate: { y: 0 }, exit: { y: "100%" }, className: "relative w-full max-w-md bg-zinc-900 rounded-3xl overflow-hidden border border-white/10" }, [
+                        React.createElement('img', { src: selectedItem.image, className: "w-full h-40 object-cover" }),
+                        React.createElement('div', { className: "p-8" }, [
+                            React.createElement('h3', { className: "text-2xl font-serif font-bold mb-1" }, selectedItem.name),
+                            React.createElement('p', { className: "text-gold font-bold mb-6" }, selectedItem.price),
+                            React.createElement('label', { className: "block text-[10px] uppercase font-bold text-white/40 mb-2" }, "Table Number"),
+                            React.createElement('input', { type: "number", value: tableNumber, onChange: e => setTableNumber(e.target.value), className: "w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 mb-6" }),
+                            React.createElement('button', { onClick: () => handleWhatsAppOrder(selectedItem, tableNumber), className: "w-full py-4 rounded-xl bg-gold text-warm-black font-bold" }, "Confirm via WhatsApp")
+                        ])
+                    ])
+                ]))
+            ]);
+        }
+
+        function App() {
+            const [phase, setPhase] = useState('landing');
+            const [isTransitioning, setIsTransitioning] = useState(false);
+            const [messageIndex, setMessageIndex] = useState(0);
+            const [crowdPulse, setCrowdPulse] = useState(0.1);
+
+            const messages = [
+                "They’ve started without you",
+                "The fire is alive tonight",
+                "You can hear the music already",
+                "People are inside",
+                "Your table is waiting",
+                "Step inside"
+            ];
+
+            const intensity = messageIndex / (messages.length - 1);
+
+            const playTick = useCallback((freq) => {
+                try {
+                    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(freq / 2, ctx.currentTime + 0.05);
+                    gain.gain.setValueAtTime(0.05, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
+                    osc.connect(gain); gain.connect(ctx.destination);
+                    osc.start(); osc.stop(ctx.currentTime + 0.05);
+                } catch (e) {}
+            }, []);
+
+            useEffect(() => {
+                if (phase === 'landing') {
+                    let timeoutId;
+                    const nextMessage = () => {
+                        setMessageIndex((prev) => {
+                            const next = (prev + 1) % messages.length;
+                            const freq = 800 - (next * 100);
+                            playTick(Math.max(200, freq));
+                            return next;
+                        });
+                        const isLast = messageIndex === messages.length - 2;
+                        const delay = isLast ? 4000 : 2000 + Math.random() * 1500;
+                        timeoutId = setTimeout(nextMessage, delay);
+                    };
+                    timeoutId = setTimeout(nextMessage, 2800);
+                    return () => clearTimeout(timeoutId);
+                }
+            }, [phase, playTick, messages.length, messageIndex]);
+
+            useEffect(() => {
+                if (phase === 'landing') {
+                    const pulse = () => {
+                        setCrowdPulse(0.15);
+                        setTimeout(() => setCrowdPulse(0.05), 1000);
+                        setTimeout(pulse, 5000 + Math.random() * 5000);
+                    };
+                    const id = setTimeout(pulse, 3000);
+                    return () => clearTimeout(id);
+                }
+            }, [phase]);
+
+            const handleEnter = () => {
+                setIsTransitioning(true);
+                setTimeout(() => { setPhase('arrival'); setIsTransitioning(false); }, 1200);
+            };
+
+            useEffect(() => {
+                if (phase === 'arrival') {
+                    const t = setTimeout(() => setPhase('main'), 3800);
+                    return () => clearTimeout(t);
+                }
+            }, [phase]);
+
+            const getGreeting = () => {
+                const hour = new Date().getHours();
+                const greeting = hour < 12 ? "Good Morning" : hour < 18 ? "Good Afternoon" : "Good Evening";
+                return `${greeting} — You’ve Arrived`;
+            };
+
+            return React.createElement(AnimatePresence, { mode: "wait" }, [
+                phase === 'landing' && React.createElement(motion.div, {
+                    key: "l", className: "relative h-screen w-full flex flex-col items-center justify-center bg-warm-black",
+                    exit: { opacity: 0, scale: 1.05 }
+                }, [
+                    // 1. Real Background Image Layer
+                    React.createElement('div', { 
+                        className: "absolute inset-0 bg-[url('/gavabackground.jpg')] bg-cover bg-center opacity-20 blur-[30px] brightness-[0.5] scale-[1.1]" 
+                    }),
+                    // 2. Dark Depth Overlay
+                    React.createElement('div', { className: "absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" }),
+                    // 3. Cinematic Gradients (Enhanced Warmth)
+                    React.createElement(motion.div, { 
+                        className: "absolute inset-0 bg-cinematic animate-flicker",
+                        animate: {
+                            scale: [1 + (intensity * 0.08), 1.08 + (intensity * 0.08), 1 + (intensity * 0.08)],
+                            rotate: [0, 1, 0],
+                            opacity: 0.5 + (intensity * 0.3)
+                        },
+                        transition: { duration: messageIndex === messages.length - 1 ? 25 : 15, repeat: Infinity, ease: "easeInOut" }
+                    }),
+                    // 4. Embers (Enhanced)
+                    React.createElement('div', { className: "absolute inset-0 pointer-events-none overflow-hidden" }, 
+                        [...Array(20 + Math.floor(intensity * 40))].map((_, i) => React.createElement('div', { 
+                            key: i, className: "ember", 
+                            style: { 
+                                left: `${Math.random()*100}%`, 
+                                width: `${1 + Math.random()*3}px`,
+                                height: `${1 + Math.random()*3}px`,
+                                opacity: 0.2 + Math.random()*0.8,
+                                animationDelay: `${Math.random()*5}s`,
+                                animationDuration: `${2 + Math.random()*6}s`
+                            } 
+                        }))
+                    ),
+                    React.createElement(motion.div, { 
+                        className: "absolute inset-0 bg-[url('https://picsum.photos/seed/restaurant-crowd/1920/1080?blur=10')] bg-cover mix-blend-soft-light",
+                        animate: { opacity: crowdPulse },
+                        transition: { duration: 2 }
+                    }),
+                    React.createElement(motion.div, { 
+                        className: "absolute inset-0",
+                        animate: { background: `radial-gradient(circle at 50% 70%, rgba(212,175,55, ${0.25 + (intensity * 0.15)}), transparent 60%)` }
+                    }),
+                    React.createElement('div', { className: "relative z-10 text-center px-6 max-w-md w-full" }, [
+                        React.createElement('div', { className: "mb-8 text-fire animate-pulse text-[10px] uppercase font-bold tracking-[0.3em] text-white/70" }, "Live Now: Grill + Music"),
+                        React.createElement('h1', { className: "font-serif text-7xl md:text-8xl font-black tracking-tighter text-white mb-6 text-glow contrast-125" }, "GAVA’S"),
+                        React.createElement('div', { className: "h-24 mb-12 flex flex-col items-center justify-center" }, [
+                            React.createElement(AnimatePresence, { mode: "wait" }, 
+                                React.createElement(motion.p, { 
+                                    key: messageIndex,
+                                    initial: { opacity: 0, y: 10, scale: 0.98 },
+                                    animate: { 
+                                        opacity: 0.7 + (intensity * 0.3), 
+                                        y: 0, scale: 1,
+                                        textShadow: `0 0 ${15 + (intensity * 25)}px rgba(255, 255, 255, ${0.3 + (intensity * 0.5)})`
+                                    },
+                                    exit: { opacity: 0, y: -10, scale: 1.02 },
+                                    transition: { duration: 0.8 },
+                                    className: "font-serif text-2xl md:text-3xl font-bold text-white tracking-tight"
+                                }, messages[messageIndex])
+                            ),
+                            React.createElement(motion.p, { 
+                                className: "font-serif italic text-lg font-medium text-white/50 mt-2 tracking-wide",
+                                animate: { opacity: 0.4 + (intensity * 0.3) }
+                            }, "Where Harare Comes To Life")
+                        ]),
+                        React.createElement('div', { className: "flex flex-col items-center gap-4" }, [
+                            React.createElement(motion.button, { 
+                                onClick: handleEnter, 
+                                animate: { 
+                                    scale: [1, 1.03, 1],
+                                    boxShadow: [
+                                        `0 0 0px rgba(212,175,55, ${0.3 + (intensity * 0.1)})`,
+                                        `0 0 ${25 + (intensity * 25)}px rgba(212,175,55, ${0.6 + (intensity * 0.4)})`,
+                                        `0 0 0px rgba(212,175,55, ${0.3 + (intensity * 0.1)})`
+                                    ]
+                                },
+                                transition: { 
+                                    scale: { duration: 3, repeat: Infinity, ease: "easeInOut" },
+                                    boxShadow: { duration: 2, repeat: Infinity }
+                                },
+                                className: "px-14 py-6 border border-gold/50 rounded-sm text-gold font-black uppercase tracking-[0.5em] relative overflow-hidden group" 
+                            }, [
+                                React.createElement('span', { className: "relative z-10" }, "Come Inside"),
+                                React.createElement(motion.div, { 
+                                    className: "absolute inset-0 bg-gold/20 opacity-0 group-hover:opacity-100 transition-opacity",
+                                    animate: isTransitioning ? { backgroundColor: "#D4AF37", opacity: 0.3 } : {}
+                                })
+                            ]),
+                            React.createElement(motion.p, { 
+                                initial: { opacity: 0 },
+                                animate: { opacity: 0.6 },
+                                className: "text-[10px] uppercase tracking-[0.3em] font-bold text-white/60"
+                            }, "Your table is waiting")
+                        ])
+                    ]),
+                    isTransitioning && React.createElement(motion.div, { className: "absolute inset-0 z-50 flex justify-center" }, 
+                        React.createElement(motion.div, { className: "w-[2px] h-full bg-gold", initial: { y: "-100%" }, animate: { y: "100%" }, transition: { duration: 1 } })
+                    )
+                ]),
+
+                phase === 'arrival' && React.createElement(motion.div, {
+                    key: "a", className: "absolute inset-0 z-[100] flex flex-col items-center justify-center bg-warm-black",
+                    initial: { opacity: 0 }, animate: { opacity: 1, scale: [1, 1.01, 1] }, exit: { opacity: 0 },
+                    transition: { opacity: { duration: 1.5 }, scale: { duration: 8, repeat: Infinity, ease: "easeInOut" } }
+                }, [
+                    React.createElement('div', { className: "absolute inset-0 bg-[url('https://picsum.photos/seed/restaurant-crowd/1920/1080?blur=20')] bg-cover bg-center opacity-[0.12] mix-blend-soft-light" }),
+                    React.createElement('div', { className: "absolute inset-0 bg-[radial-gradient(circle_at_center,_#FFB34722_0%,_transparent_70%)]" }),
+                    React.createElement('div', { className: "absolute inset-0 bg-gradient-to-t from-[#FF4E0022] via-transparent to-transparent" }),
+                    React.createElement(motion.div, { 
+                        className: "absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--color-gold)_0%,_transparent_70%)] opacity-10",
+                        animate: { opacity: [0.05, 0.15, 0.05] },
+                        transition: { duration: 4, repeat: Infinity, ease: "easeInOut" }
+                    }),
+                    React.createElement('div', { className: "absolute inset-0 pointer-events-none overflow-hidden opacity-30" }, 
+                        [...Array(8)].map((_, i) => React.createElement(motion.div, { 
+                            key: i, className: "absolute w-1 h-1 bg-gold rounded-full blur-[1px]",
+                            initial: { x: Math.random() * 100 + "%", y: "110%", opacity: 0 },
+                            animate: { y: "-10%", opacity: [0, 1, 0] },
+                            transition: { duration: 10 + Math.random() * 10, repeat: Infinity, delay: Math.random() * 5 }
+                        }))
+                    ),
+                    React.createElement('div', { className: "relative z-10 text-center flex flex-col items-center gap-6" }, [
+                        React.createElement(motion.p, { 
+                            initial: { opacity: 0, y: 10 }, animate: { opacity: 0.8, y: 0 },
+                            transition: { delay: 0.2, duration: 1 },
+                            className: "font-serif text-sm tracking-[0.3em] text-gold/80"
+                        }, "Welcome."),
+                        React.createElement(motion.p, { 
+                            initial: { opacity: 0, y: 10 }, animate: { opacity: 0.4, y: 0 },
+                            transition: { delay: 0.5, duration: 1 },
+                            className: "font-serif text-xs uppercase tracking-[0.5em] text-white"
+                        }, getGreeting()),
+                        React.createElement(motion.h2, { 
+                            initial: { opacity: 0, y: 15 }, animate: { opacity: 1, y: 0 },
+                            transition: { delay: 0.9, duration: 1.2 },
+                            className: "font-serif text-5xl md:text-6xl font-bold text-white tracking-tight text-glow"
+                        }, "You’re Inside Gava’s"),
+                        React.createElement(motion.p, { 
+                            initial: { opacity: 0, y: 10 }, animate: { opacity: 0.6, y: 0 },
+                            transition: { delay: 1.4, duration: 1 },
+                            className: "font-serif italic text-xl text-white"
+                        }, "Settle in. Something good is cooking."),
+                        React.createElement(motion.p, { 
+                            initial: { opacity: 0, y: 5 }, animate: { opacity: 0.8, y: 0 },
+                            transition: { delay: 2.0, duration: 1 },
+                            className: "text-[10px] uppercase tracking-widest text-gold font-bold"
+                        }, "The table is yours")
+                    ])
+                ]),
+
+                phase === 'main' && React.createElement(motion.div, { key: "m", className: "h-screen w-full" }, React.createElement(MainScreen))
+            ]);
+        }
+
+        createRoot(document.getElementById('root')).render(React.createElement(App));
+    </script>
+</body>
+</html>
