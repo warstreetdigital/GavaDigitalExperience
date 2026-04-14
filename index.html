@@ -19,7 +19,7 @@
 
         body {
             background-color: #0A0502;
-            color: white;
+            color: #F8F4F0; /* Warm White */
             margin: 0;
             padding: 0;
             overflow: hidden;
@@ -28,7 +28,7 @@
         }
 
         .text-glow {
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            text-shadow: 0 0 25px rgba(255, 255, 255, 0.35);
         }
 
         .bg-cinematic {
@@ -36,17 +36,6 @@
                 radial-gradient(circle at 50% 30%, #3a1510 0%, transparent 60%),
                 radial-gradient(circle at 10% 80%, #FF4E00 0%, transparent 50%),
                 radial-gradient(circle at 90% 90%, #D4AF37 0%, transparent 40%);
-        }
-
-        .animate-flicker {
-            animation: flicker 4s infinite;
-        }
-
-        @keyframes flicker {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 0.8; }
-            70% { opacity: 0.65; }
-            80% { opacity: 0.75; }
         }
 
         .ember {
@@ -94,12 +83,13 @@
         const WHATSAPP_NUMBER = '+263779388560';
 
         const MENU_ITEMS = [
-            { id: '1', name: 'Oxtail + Sadza', price: '$18.00', image: 'https://picsum.photos/seed/oxtail/400/300', category: 'Traditional Meals', isPopular: true, description: 'Slow-cooked tender oxtail in a rich gravy.' },
-            { id: '2', name: 'Quarter Chicken', price: '$12.00', image: 'https://picsum.photos/seed/chicken/400/300', category: 'Grill / Braai', isPopular: true, isLimited: true, description: 'Flame-grilled peri-peri chicken.' },
-            { id: '3', name: 'Braai Platter', price: '$25.00', image: 'https://picsum.photos/seed/braai/400/300', category: 'Grill / Braai', isPopular: true, description: 'A feast of boerewors, steak, and chops.' },
-            { id: '4', name: 'Beef Stew', price: '$14.00', image: 'https://picsum.photos/seed/stew/400/300', category: 'Traditional Meals', description: 'Hearty beef chunks with seasonal veg.' },
-            { id: '5', name: 'Mazondo (Trotters)', price: '$15.00', image: 'https://picsum.photos/seed/trotters/400/300', category: 'Traditional Meals', isLimited: true, description: 'Traditional beef trotters slow-cooked.' },
-            { id: '6', name: 'Zambezi Lager', price: '$4.00', image: 'https://picsum.photos/seed/beer/400/300', category: 'Drinks', description: 'Zimbabwe\'s finest lager.' }
+            { id: '1', name: 'Oxtail + Sadza', price: '$18.00', image: 'oxtail.jpg', category: 'Traditional Meals', isPopular: true, description: 'Slow-cooked tender oxtail in a rich, savory gravy served with traditional white sadza.' },
+            { id: '2', name: 'Quarter Chicken + Chips', price: '$12.00', image: 'chicken.jpg', category: 'Grill / Braai', isPopular: true, isLimited: true, description: 'Flame-grilled peri-peri chicken served with crispy hand-cut potato chips.' },
+            { id: '3', name: 'Braai Platter', price: '$25.00', image: 'braai.jpg', category: 'Grill / Braai', isPopular: true, description: 'A feast of boerewors, steak, and pork chops served with chakalaka and sadza.' },
+            { id: '4', name: 'Beef Stew', price: '$14.00', image: 'stew.jpg', category: 'Traditional Meals', description: 'Hearty beef chunks simmered with seasonal vegetables and traditional spices.' },
+            { id: '5', name: 'Mazondo (Trotters)', price: '$15.00', image: 'trotters.jpg', category: 'Traditional Meals', isLimited: true, description: 'Traditional beef trotters slow-cooked to perfection. A local delicacy.' },
+            { id: '6', name: 'Zambezi Lager', price: '$4.00', image: 'beer.jpg', category: 'Drinks', description: 'Zimbabwe\'s finest lager, served ice cold.' },
+            { id: '7', name: 'Chibuku Super', price: '$3.00', image: 'chibuku.jpg', category: 'Drinks', description: 'Traditional sorghum beer, a true taste of Zimbabwe.' }
         ];
 
         function MainScreen() {
@@ -108,9 +98,9 @@
 
             const currentPromo = useMemo(() => {
                 const hour = new Date().getHours();
-                if (hour >= 6 && hour < 11) return { title: "Breakfast Plate + Tea", desc: "The perfect start.", image: "https://picsum.photos/seed/breakfast/800/450", price: "$8.00", time: "Morning Special" };
-                if (hour >= 11 && hour < 16) return { title: "Grilled Chicken + Sadza", desc: "Hearty fuel.", image: "https://picsum.photos/seed/lunch/800/450", price: "$12.00", time: "Lunch Special" };
-                return { title: "Steak + Drink + Music", desc: "The ultimate evening.", image: "https://picsum.photos/seed/dinner/800/450", price: "$22.00", time: "Dinner Special" };
+                if (hour >= 6 && hour < 11) return { title: "Breakfast Plate + Tea", desc: "The perfect start.", image: "breakfast.jpg", price: "$8.00", time: "Morning Special" };
+                if (hour >= 11 && hour < 16) return { title: "Grilled Chicken + Sadza", desc: "Hearty fuel.", image: "lunch.jpg", price: "$12.00", time: "Lunch Special" };
+                return { title: "Steak + Drink + Music", desc: "The ultimate evening.", image: "dinner.jpg", price: "$22.00", time: "Dinner Special" };
             }, []);
 
             const handleWhatsAppOrder = (item, table) => {
@@ -153,7 +143,9 @@
                                 React.createElement('div', null, [
                                     React.createElement('div', { className: "flex items-center gap-2 mb-2" }, [
                                         React.createElement(Flame, { size: 16, className: "text-fire" }),
-                                        React.createElement('span', { className: "text-xs font-bold uppercase tracking-wider text-fire" }, "Order This Now")
+                                        React.createElement('span', { 
+                                            className: "text-xs font-black uppercase tracking-wider text-fire px-2 py-1 rounded-full bg-fire/10 border border-fire/20 animate-pulse drop-shadow-[0_0_6px_#FF4E00]" 
+                                        }, "Order This Now")
                                     ]),
                                     React.createElement('h3', { className: "text-2xl font-serif font-bold mb-1" }, currentPromo.title)
                                 ]),
@@ -169,12 +161,12 @@
                             React.createElement('span', { className: "text-[10px] font-bold text-gold" }, "Popular Now")
                         ]),
                         React.createElement('div', { className: "flex gap-4 overflow-x-auto px-6 no-scrollbar" }, 
-                            MENU_ITEMS.filter(i => i.isPopular).map(i => React.createElement('div', { key: i.id, onClick: () => setSelectedItem(i), className: "flex-shrink-0 w-40 bg-white/5 rounded-2xl overflow-hidden relative" }, [
+                            MENU_ITEMS.filter(i => i.isPopular).map(i => React.createElement('div', { key: i.id, onClick: () => setSelectedItem(i), className: "flex-shrink-0 w-48 bg-white/5 rounded-2xl overflow-hidden border border-white/5 relative" }, [
                                 i.isLimited && React.createElement('div', { className: "absolute top-2 right-2 bg-fire text-[8px] font-bold px-2 py-1 rounded-full" }, "ONLY TODAY"),
-                                React.createElement('img', { src: i.image, className: "w-full h-28 object-cover" }),
-                                React.createElement('div', { className: "p-3" }, [
-                                    React.createElement('h3', { className: "font-bold text-xs mb-1" }, i.name),
-                                    React.createElement('p', { className: "text-gold font-bold text-xs" }, i.price)
+                                React.createElement('img', { src: i.image, className: "w-full h-32 object-cover" }),
+                                React.createElement('div', { className: "p-4" }, [
+                                    React.createElement('h3', { className: "font-bold text-sm mb-1" }, i.name),
+                                    React.createElement('p', { className: "text-gold font-bold text-sm" }, i.price)
                                 ])
                             ]))
                         )
@@ -186,9 +178,9 @@
                         ['Traditional Meals', 'Grill / Braai', 'Drinks'].map(cat => React.createElement('div', { key: cat, className: "mb-8" }, [
                             React.createElement('h3', { className: "font-serif text-xl font-bold mb-4 text-gold/80 border-l-2 border-gold pl-3" }, cat),
                             React.createElement('div', { className: "flex flex-col gap-4" }, 
-                                MENU_ITEMS.filter(i => i.category === cat).map(i => React.createElement('div', { key: i.id, onClick: () => setSelectedItem(i), className: "flex gap-4 p-3 rounded-2xl bg-white/5 relative" }, [
+                                MENU_ITEMS.filter(i => i.category === cat).map(i => React.createElement('div', { key: i.id, onClick: () => setSelectedItem(i), className: "flex gap-4 p-3 rounded-2xl bg-white/5 border border-white/5 relative" }, [
                                     i.isLimited && React.createElement('div', { className: "absolute top-3 right-3 bg-fire/20 text-[8px] font-bold px-2 py-0.5 rounded-full text-fire" }, "LIMITED"),
-                                    React.createElement('img', { src: i.image, className: "w-20 h-20 rounded-xl object-cover" }),
+                                    React.createElement('img', { src: i.image, className: "w-24 h-24 rounded-xl object-cover" }),
                                     React.createElement('div', { className: "flex flex-col justify-center" }, [
                                         React.createElement('h4', { className: "font-bold text-sm mb-1" }, i.name),
                                         React.createElement('p', { className: "text-gold font-bold text-sm" }, i.price)
@@ -215,7 +207,7 @@
                             React.createElement(Bell, { size: 18, className: "text-white/60" }),
                             React.createElement('span', { className: "text-[8px] uppercase font-bold text-white/40" }, "Call Waiter")
                         ]),
-                        React.createElement('button', { onClick: () => document.querySelector('main').scrollTo({top:0, behavior:'smooth'}), className: "flex-[1.5] flex items-center justify-center gap-2 py-3 rounded-full bg-gold text-warm-black font-bold text-xs shadow-[0_0_20px_rgba(212,175,55,0.3)]" }, [
+                        React.createElement('button', { onClick: () => document.querySelector('main').scrollTo({top:0, behavior:'smooth'}), className: "flex-[1.5] flex items-center justify-center gap-2 py-3 rounded-full bg-gold text-warm-black font-bold text-sm shadow-[0_0_20px_rgba(212,175,55,0.3)]" }, [
                             React.createElement(ShoppingBag, { size: 16 }),
                             React.createElement('span', null, "Order Now")
                         ]),
@@ -230,7 +222,7 @@
                 React.createElement(AnimatePresence, { key: "modal" }, selectedItem && React.createElement('div', { className: "fixed inset-0 z-[100] flex items-end justify-center px-4 pb-8" }, [
                     React.createElement(motion.div, { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 }, onClick: () => setSelectedItem(null), className: "absolute inset-0 bg-warm-black/80 backdrop-blur-sm" }),
                     React.createElement(motion.div, { initial: { y: "100%" }, animate: { y: 0 }, exit: { y: "100%" }, className: "relative w-full max-w-md bg-zinc-900 rounded-3xl overflow-hidden border border-white/10" }, [
-                        React.createElement('img', { src: selectedItem.image, className: "w-full h-40 object-cover" }),
+                        React.createElement('img', { src: selectedItem.image, className: "w-full h-48 object-cover" }),
                         React.createElement('div', { className: "p-8" }, [
                             React.createElement('h3', { className: "text-2xl font-serif font-bold mb-1" }, selectedItem.name),
                             React.createElement('p', { className: "text-gold font-bold mb-6" }, selectedItem.price),
@@ -246,19 +238,7 @@
         function App() {
             const [phase, setPhase] = useState('landing');
             const [isTransitioning, setIsTransitioning] = useState(false);
-            const [messageIndex, setMessageIndex] = useState(0);
             const [crowdPulse, setCrowdPulse] = useState(0.1);
-
-            const messages = [
-                "They’ve started without you",
-                "The fire is alive tonight",
-                "You can hear the music already",
-                "People are inside",
-                "Your table is waiting",
-                "Step inside"
-            ];
-
-            const intensity = messageIndex / (messages.length - 1);
 
             const playTick = useCallback((freq) => {
                 try {
@@ -276,29 +256,10 @@
 
             useEffect(() => {
                 if (phase === 'landing') {
-                    let timeoutId;
-                    const nextMessage = () => {
-                        setMessageIndex((prev) => {
-                            const next = (prev + 1) % messages.length;
-                            const freq = 800 - (next * 100);
-                            playTick(Math.max(200, freq));
-                            return next;
-                        });
-                        const isLast = messageIndex === messages.length - 2;
-                        const delay = isLast ? 4000 : 2000 + Math.random() * 1500;
-                        timeoutId = setTimeout(nextMessage, delay);
-                    };
-                    timeoutId = setTimeout(nextMessage, 2800);
-                    return () => clearTimeout(timeoutId);
-                }
-            }, [phase, playTick, messages.length, messageIndex]);
-
-            useEffect(() => {
-                if (phase === 'landing') {
                     const pulse = () => {
-                        setCrowdPulse(0.15);
-                        setTimeout(() => setCrowdPulse(0.05), 1000);
-                        setTimeout(pulse, 5000 + Math.random() * 5000);
+                        setCrowdPulse(0.12);
+                        setTimeout(() => setCrowdPulse(0.08), 2000);
+                        setTimeout(pulse, 6000 + Math.random() * 4000);
                     };
                     const id = setTimeout(pulse, 3000);
                     return () => clearTimeout(id);
@@ -306,13 +267,15 @@
             }, [phase]);
 
             const handleEnter = () => {
+                if (isTransitioning) return;
                 setIsTransitioning(true);
+                playTick(200);
                 setTimeout(() => { setPhase('arrival'); setIsTransitioning(false); }, 1200);
             };
 
             useEffect(() => {
                 if (phase === 'arrival') {
-                    const t = setTimeout(() => setPhase('main'), 3800);
+                    const t = setTimeout(() => setPhase('main'), 4000);
                     return () => clearTimeout(t);
                 }
             }, [phase]);
@@ -326,151 +289,148 @@
             return React.createElement(AnimatePresence, { mode: "wait" }, [
                 phase === 'landing' && React.createElement(motion.div, {
                     key: "l", className: "relative h-screen w-full flex flex-col items-center justify-center bg-warm-black",
-                    exit: { opacity: 0, scale: 1.05 }
+                    exit: { opacity: 0, scale: 1.02 },
+                    transition: { duration: 1.2, ease: "easeInOut" }
                 }, [
-                    // 1. Real Background Image Layer
-                    React.createElement('div', { 
-                        className: "absolute inset-0 bg-[url('/gavabackground.jpg')] bg-cover bg-center opacity-20 blur-[30px] brightness-[0.5] scale-[1.1]" 
+                    // 1. Real Background Image Layer with Slow Zoom
+                    React.createElement(motion.div, { 
+                        className: "absolute inset-0 bg-[url('/gavabackground.jpg')] bg-cover bg-center",
+                        initial: { scale: 1.1, filter: 'blur(30px) brightness(0.5)' },
+                        animate: { scale: 1.18 },
+                        transition: { duration: 40, repeat: Infinity, repeatType: "reverse", ease: "linear" },
+                        style: { opacity: 0.18 }
                     }),
                     // 2. Dark Depth Overlay
-                    React.createElement('div', { className: "absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" }),
-                    // 3. Cinematic Gradients (Enhanced Warmth)
+                    React.createElement('div', { className: "absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-black/70" }),
+                    // 3. Cinematic Gradients (Warm Tint)
                     React.createElement(motion.div, { 
-                        className: "absolute inset-0 bg-cinematic animate-flicker",
-                        animate: {
-                            scale: [1 + (intensity * 0.08), 1.08 + (intensity * 0.08), 1 + (intensity * 0.08)],
-                            rotate: [0, 1, 0],
-                            opacity: 0.5 + (intensity * 0.3)
-                        },
-                        transition: { duration: messageIndex === messages.length - 1 ? 25 : 15, repeat: Infinity, ease: "easeInOut" }
+                        className: "absolute inset-0 bg-cinematic mix-blend-screen",
+                        animate: { opacity: [0.3, 0.45, 0.3] },
+                        transition: { duration: 10, repeat: Infinity, ease: "easeInOut" }
                     }),
-                    // 4. Embers (Enhanced)
+                    // 4. Human Presence (Crowd Breathing)
+                    React.createElement(motion.div, { 
+                        className: "absolute inset-0 bg-[url('/gavabackground.jpg')] bg-cover bg-center opacity-[0.12] mix-blend-soft-light blur-[10px]",
+                        animate: { opacity: [0.08, 0.15, 0.08] },
+                        transition: { duration: 8, repeat: Infinity, ease: "easeInOut" }
+                    }),
+                    // 5. Embers (Refined)
                     React.createElement('div', { className: "absolute inset-0 pointer-events-none overflow-hidden" }, 
-                        [...Array(20 + Math.floor(intensity * 40))].map((_, i) => React.createElement('div', { 
+                        [...Array(30)].map((_, i) => React.createElement('div', { 
                             key: i, className: "ember", 
                             style: { 
                                 left: `${Math.random()*100}%`, 
-                                width: `${1 + Math.random()*3}px`,
-                                height: `${1 + Math.random()*3}px`,
-                                opacity: 0.2 + Math.random()*0.8,
-                                animationDelay: `${Math.random()*5}s`,
-                                animationDuration: `${2 + Math.random()*6}s`
+                                width: `${1 + Math.random()*2}px`,
+                                height: `${1 + Math.random()*2}px`,
+                                opacity: 0.1 + Math.random()*0.4,
+                                animationDelay: `${Math.random()*8}s`,
+                                animationDuration: `${6 + Math.random()*10}s`
                             } 
                         }))
                     ),
-                    React.createElement(motion.div, { 
-                        className: "absolute inset-0 bg-[url('https://picsum.photos/seed/restaurant-crowd/1920/1080?blur=10')] bg-cover mix-blend-soft-light",
-                        animate: { opacity: crowdPulse },
-                        transition: { duration: 2 }
-                    }),
-                    React.createElement(motion.div, { 
-                        className: "absolute inset-0",
-                        animate: { background: `radial-gradient(circle at 50% 70%, rgba(212,175,55, ${0.25 + (intensity * 0.15)}), transparent 60%)` }
-                    }),
+                    // 6. Warm Glow & Haze
+                    React.createElement('div', { className: "absolute inset-0 bg-[radial-gradient(circle_at_center,_#D4AF3715_0%,_transparent_70%)]" }),
+                    React.createElement('div', { className: "absolute inset-0 bg-gradient-to-t from-[#FF4E0015] via-transparent to-transparent" }),
+                    
                     React.createElement('div', { className: "relative z-10 text-center px-6 max-w-md w-full" }, [
-                        React.createElement('div', { className: "mb-8 text-fire animate-pulse text-[10px] uppercase font-bold tracking-[0.3em] text-white/70" }, "Live Now: Grill + Music"),
-                        React.createElement('h1', { className: "font-serif text-7xl md:text-8xl font-black tracking-tighter text-white mb-6 text-glow contrast-125" }, "GAVA’S"),
-                        React.createElement('div', { className: "h-24 mb-12 flex flex-col items-center justify-center" }, [
-                            React.createElement(AnimatePresence, { mode: "wait" }, 
-                                React.createElement(motion.p, { 
-                                    key: messageIndex,
-                                    initial: { opacity: 0, y: 10, scale: 0.98 },
-                                    animate: { 
-                                        opacity: 0.7 + (intensity * 0.3), 
-                                        y: 0, scale: 1,
-                                        textShadow: `0 0 ${15 + (intensity * 25)}px rgba(255, 255, 255, ${0.3 + (intensity * 0.5)})`
-                                    },
-                                    exit: { opacity: 0, y: -10, scale: 1.02 },
-                                    transition: { duration: 0.8 },
-                                    className: "font-serif text-2xl md:text-3xl font-bold text-white tracking-tight"
-                                }, messages[messageIndex])
-                            ),
-                            React.createElement(motion.p, { 
-                                className: "font-serif italic text-lg font-medium text-white/50 mt-2 tracking-wide",
-                                animate: { opacity: 0.4 + (intensity * 0.3) }
-                            }, "Where Harare Comes To Life")
+                        React.createElement('div', { className: "mb-10 text-fire text-[10px] uppercase font-bold tracking-[0.4em]" }, [
+                            React.createElement('span', { className: "w-1.5 h-1.5 rounded-full bg-fire inline-block mr-2 shadow-[0_0_8px_#FF4E00]" }),
+                            "Live Now: Grill + Music"
                         ]),
-                        React.createElement('div', { className: "flex flex-col items-center gap-4" }, [
+                        React.createElement(motion.h1, { 
+                            className: "font-serif text-8xl md:text-9xl font-black tracking-tighter text-white mb-4 text-glow contrast-125",
+                            animate: { scale: [1, 1.02, 1] },
+                            transition: { duration: 6, repeat: Infinity, ease: "easeInOut" }
+                        }, "GAVA’S"),
+                        React.createElement(motion.p, { 
+                            initial: { opacity: 0 }, animate: { opacity: 0.7 },
+                            transition: { delay: 1, duration: 2 },
+                            className: "text-[11px] uppercase tracking-[0.5em] font-bold text-gold mb-8"
+                        }, "Grill • Music • Culture"),
+                        React.createElement(motion.p, { 
+                            initial: { opacity: 0 }, animate: { opacity: 0.4 },
+                            transition: { delay: 1.5, duration: 2 },
+                            className: "font-serif italic text-xl text-white/80 tracking-widest mb-16"
+                        }, "Where Harare Comes To Life"),
+                        React.createElement('div', { className: "flex flex-col items-center gap-6" }, [
                             React.createElement(motion.button, { 
                                 onClick: handleEnter, 
-                                animate: { 
-                                    scale: [1, 1.03, 1],
-                                    boxShadow: [
-                                        `0 0 0px rgba(212,175,55, ${0.3 + (intensity * 0.1)})`,
-                                        `0 0 ${25 + (intensity * 25)}px rgba(212,175,55, ${0.6 + (intensity * 0.4)})`,
-                                        `0 0 0px rgba(212,175,55, ${0.3 + (intensity * 0.1)})`
-                                    ]
-                                },
-                                transition: { 
-                                    scale: { duration: 3, repeat: Infinity, ease: "easeInOut" },
-                                    boxShadow: { duration: 2, repeat: Infinity }
-                                },
-                                className: "px-14 py-6 border border-gold/50 rounded-sm text-gold font-black uppercase tracking-[0.5em] relative overflow-hidden group" 
+                                animate: { boxShadow: ["0 0 0px rgba(212,175,55, 0.2)", "0 0 30px rgba(212,175,55, 0.4)", "0 0 0px rgba(212,175,55, 0.2)"] },
+                                transition: { boxShadow: { duration: 4, repeat: Infinity } },
+                                className: "px-16 py-6 border border-white/10 rounded-sm text-gold font-black uppercase tracking-[0.6em] relative overflow-hidden group backdrop-blur-md bg-white/5" 
                             }, [
                                 React.createElement('span', { className: "relative z-10" }, "Come Inside"),
                                 React.createElement(motion.div, { 
-                                    className: "absolute inset-0 bg-gold/20 opacity-0 group-hover:opacity-100 transition-opacity",
+                                    className: "absolute inset-0 bg-gold/10 opacity-0 group-hover:opacity-100 transition-opacity",
                                     animate: isTransitioning ? { backgroundColor: "#D4AF37", opacity: 0.3 } : {}
-                                })
+                                }),
+                                React.createElement(AnimatePresence, null, isTransitioning && React.createElement(motion.div, {
+                                    className: "absolute inset-0 bg-gold/40 blur-3xl rounded-full",
+                                    initial: { scale: 0, opacity: 0 }, animate: { scale: 6, opacity: 0 },
+                                    transition: { duration: 1.5, ease: "easeOut" }
+                                }))
                             ]),
                             React.createElement(motion.p, { 
-                                initial: { opacity: 0 },
-                                animate: { opacity: 0.6 },
-                                className: "text-[10px] uppercase tracking-[0.3em] font-bold text-white/60"
+                                initial: { opacity: 0 }, animate: { opacity: 0.5 },
+                                transition: { delay: 2 },
+                                className: "text-[10px] uppercase tracking-[0.4em] font-bold text-white/40"
                             }, "Your table is waiting")
                         ])
                     ]),
-                    isTransitioning && React.createElement(motion.div, { className: "absolute inset-0 z-50 flex justify-center" }, 
-                        React.createElement(motion.div, { className: "w-[2px] h-full bg-gold", initial: { y: "-100%" }, animate: { y: "100%" }, transition: { duration: 1 } })
-                    )
+                    // Corner Accents
+                    React.createElement('div', { className: "absolute top-12 left-12 w-16 h-[1px] bg-white/5" }),
+                    React.createElement('div', { className: "absolute top-12 left-12 w-[1px] h-16 bg-white/5" }),
+                    React.createElement('div', { className: "absolute bottom-12 right-12 w-16 h-[1px] bg-white/5" }),
+                    React.createElement('div', { className: "absolute bottom-12 right-12 w-[1px] h-16 bg-white/5" })
                 ]),
 
                 phase === 'arrival' && React.createElement(motion.div, {
                     key: "a", className: "absolute inset-0 z-[100] flex flex-col items-center justify-center bg-warm-black",
-                    initial: { opacity: 0 }, animate: { opacity: 1, scale: [1, 1.01, 1] }, exit: { opacity: 0 },
-                    transition: { opacity: { duration: 1.5 }, scale: { duration: 8, repeat: Infinity, ease: "easeInOut" } }
+                    initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 },
+                    transition: { duration: 1.5 }
                 }, [
-                    React.createElement('div', { className: "absolute inset-0 bg-[url('https://picsum.photos/seed/restaurant-crowd/1920/1080?blur=20')] bg-cover bg-center opacity-[0.12] mix-blend-soft-light" }),
-                    React.createElement('div', { className: "absolute inset-0 bg-[radial-gradient(circle_at_center,_#FFB34722_0%,_transparent_70%)]" }),
-                    React.createElement('div', { className: "absolute inset-0 bg-gradient-to-t from-[#FF4E0022] via-transparent to-transparent" }),
+                    // 1. Background Image with Less Blur
                     React.createElement(motion.div, { 
-                        className: "absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--color-gold)_0%,_transparent_70%)] opacity-10",
-                        animate: { opacity: [0.05, 0.15, 0.05] },
-                        transition: { duration: 4, repeat: Infinity, ease: "easeInOut" }
+                        className: "absolute inset-0 bg-[url('/gavabackground.jpg')] bg-cover bg-center",
+                        initial: { scale: 1.05, filter: 'blur(15px) brightness(0.6)' },
+                        animate: { scale: 1.1 },
+                        transition: { duration: 10, ease: "easeOut" },
+                        style: { opacity: 0.25 }
                     }),
-                    React.createElement('div', { className: "absolute inset-0 pointer-events-none overflow-hidden opacity-30" }, 
-                        [...Array(8)].map((_, i) => React.createElement(motion.div, { 
-                            key: i, className: "absolute w-1 h-1 bg-gold rounded-full blur-[1px]",
-                            initial: { x: Math.random() * 100 + "%", y: "110%", opacity: 0 },
-                            animate: { y: "-10%", opacity: [0, 1, 0] },
-                            transition: { duration: 10 + Math.random() * 10, repeat: Infinity, delay: Math.random() * 5 }
-                        }))
-                    ),
+                    // 2. Overlays
+                    React.createElement('div', { className: "absolute inset-0 bg-[radial-gradient(circle_at_center,_#D4AF3733_0%,_transparent_70%)]" }),
+                    React.createElement('div', { className: "absolute inset-0 bg-gradient-to-t from-[#FF4E0033] via-transparent to-transparent" }),
+                    // 3. Smoke/Haze
+                    React.createElement(motion.div, { 
+                        className: "absolute inset-0 bg-white/5 mix-blend-overlay",
+                        animate: { opacity: [0.03, 0.08, 0.03] },
+                        transition: { duration: 5, repeat: Infinity, ease: "easeInOut" }
+                    }),
                     React.createElement('div', { className: "relative z-10 text-center flex flex-col items-center gap-6" }, [
                         React.createElement(motion.p, { 
                             initial: { opacity: 0, y: 10 }, animate: { opacity: 0.8, y: 0 },
-                            transition: { delay: 0.2, duration: 1 },
-                            className: "font-serif text-sm tracking-[0.3em] text-gold/80"
+                            transition: { delay: 0.2, duration: 1.2 },
+                            className: "font-serif text-sm tracking-[0.4em] text-gold/90 uppercase font-bold"
                         }, "Welcome."),
                         React.createElement(motion.p, { 
-                            initial: { opacity: 0, y: 10 }, animate: { opacity: 0.4, y: 0 },
-                            transition: { delay: 0.5, duration: 1 },
-                            className: "font-serif text-xs uppercase tracking-[0.5em] text-white"
+                            initial: { opacity: 0, y: 10 }, animate: { opacity: 0.5, y: 0 },
+                            transition: { delay: 0.6, duration: 1.2 },
+                            className: "font-serif text-xs uppercase tracking-[0.6em] text-white/80"
                         }, getGreeting()),
                         React.createElement(motion.h2, { 
-                            initial: { opacity: 0, y: 15 }, animate: { opacity: 1, y: 0 },
-                            transition: { delay: 0.9, duration: 1.2 },
+                            initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 },
+                            transition: { delay: 1.0, duration: 1.5 },
                             className: "font-serif text-5xl md:text-6xl font-bold text-white tracking-tight text-glow"
                         }, "You’re Inside Gava’s"),
                         React.createElement(motion.p, { 
-                            initial: { opacity: 0, y: 10 }, animate: { opacity: 0.6, y: 0 },
-                            transition: { delay: 1.4, duration: 1 },
-                            className: "font-serif italic text-xl text-white"
+                            initial: { opacity: 0, y: 10 }, animate: { opacity: 0.7, y: 0 },
+                            transition: { delay: 1.6, duration: 1.2 },
+                            className: "font-serif italic text-xl text-white/90 tracking-wide"
                         }, "Settle in. Something good is cooking."),
                         React.createElement(motion.p, { 
-                            initial: { opacity: 0, y: 5 }, animate: { opacity: 0.8, y: 0 },
-                            transition: { delay: 2.0, duration: 1 },
-                            className: "text-[10px] uppercase tracking-widest text-gold font-bold"
+                            initial: { opacity: 0, y: 5 }, animate: { opacity: 0.9, y: 0 },
+                            transition: { delay: 2.4, duration: 1.2 },
+                            className: "text-[11px] uppercase tracking-[0.5em] text-gold font-black"
                         }, "The table is yours")
                     ])
                 ]),
